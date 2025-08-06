@@ -1,0 +1,37 @@
+variables:
+
+    SRC_DATABASE:
+        description: Database where source datasets are located
+        default: samples
+
+    SRC_SCHEMA:
+        description: Schema in SRC_DATABASE where source datasets are located
+        default: nyctaxi
+
+    MLFLOW_EXPERIMENT_ID:
+        description: ID of mlflow experiments to track runs and store artifacts
+        default: 
+
+    MODEL_REGISTRY_CATALOG:
+        description: Catalog that contains the schema where prod models will be registered
+        default: 
+
+    MODEL_NAME:
+        description: name of the prod model to be used in MLFlow model registry
+        default: 
+
+    MODEL_REGISTRY_SCHEMA:
+        description: Schema where models will be saved within prod catalog
+        default: 
+        
+    FEATURE_STORE_CATALOG:
+        description: Catalog that contains the schema where feature store tables will be saved
+        default: 
+
+    FEATURE_STORE_SCHEMA:
+        description: Schema where feature store tables will be saved within prod catalog
+        default: 
+
+    FEATURE_STORE:
+        description: Provides a reference for writing data to and reading data from
+        default: 

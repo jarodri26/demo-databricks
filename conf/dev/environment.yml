@@ -1,11 +1,11 @@
 variables:
 
-
     SRC_DATABASE:
         description: Database where source datasets are located
         default: samples
 
-    SRC_SCHEMA:    
+
+    SRC_SCHEMA:
         description: Schema in SRC_DATABASE where source datasets are located
         default: nyctaxi
 
@@ -37,3 +37,4 @@ variables:
     MODEL_STORE:
         description: provides a reference for writing data to and reading data from
         default: fs_nyc_taxi_trips        
+
