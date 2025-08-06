@@ -1,0 +1,54 @@
+resources:
+  jobs:
+  
+    demo_training_job:
+      name: demo_training_job
+
+      job_clusters: &default_job_cluster
+      - job_cluster_key: demo_taxi_fare_prediction_bundle_cluster
+        new_cluster:
+          spark_version: 15.4.x-cpu-ml-scala2.12
+          node_type_id : Standard_DS3_v2
+          num_workers: 1
+          spark_env_vars:
+            MLFLOW_TRACKING_URI: "databricks"
+          data_security_mode: "SINGLE_USER"
+          single_user_name: ${workspace.current_user.userName}
+
+      schedule:
+        # Run every first monday of the month at 8:37 AM
+        quartz_cron_expression: '44 37 8 ? * 2#1'
+        timezone_id: America/New_York
+
+      email_notifications:
+        on_failure:
+          - ${workspace.current_user.userName}
+
+      tasks:
+
+        - task_key: training
+          job_cluster_key: demo_taxi_fare_prediction_bundle_cluster
+          notebook_task:
+            notebook_path: ../src/training/model_training.py
+        
+    demo_inference_job:
+      name: demo_inference_job
+
+      job_clusters: *default_job_cluster
+      
+      schedule:
+        # Run every  monday at 8:37 AM
+        quartz_cron_expression: '44 37 8 ? * MON'
+        timezone_id: America/New_York
+
+      email_notifications:
+        on_failure:
+          - ${workspace.current_user.userName}
+
+      tasks:
+
+        - task_key: generate_predictions
+          job_cluster_key: demo_taxi_fare_prediction_bundle_cluster
+          notebook_task:
+            notebook_path: ../src/inferencing/inferencing.py
+        

@@ -1,0 +1,74 @@
+# Demo Databricks MLOps Project
+
+This project demonstrates how to utilize Databricks resources for MLOps.
+
+## Requirements
+
+To use this project, ensure you have:
+
+- A **Databricks account** with ML features enabled.
+- Access to a **Databricks workspace and cluster**.
+- **Databricks Runtime 15.4 LTS ML**.
+- A **cluster with Unity Catalog enabled** (Check for the `Unity Catalog` flag in `Compute` -> `Summary`).
+- Access to the **New York Trips dataset** (available in the samples catalog).
+- A **development and production catalog with corresponding schemas**.
+- A **Bitbucket repository** (required if using the built-in CI/CD pipeline).
+
+---
+
+## Using Databricks Locally
+
+This project is designed to run within Databricks, but local development is possible using the [Databricks VS Code extension](https://docs.databricks.com/en/dev-tools/vscode-ext/index.html). You can also deploy workflows locally via Databricks Asset Bundles (see the relevant section below).
+
+---
+
+## Databricks Setup
+
+### 1. Clone the Repository in Databricks
+1. In **Databricks**: Navigate to `Workspace` -> `Users`, select your user, and click `Create` -> `Git Folder`.
+2. If Databricks and Bitbucket are not yet connected, follow [this guide](https://docs.databricks.com/en/repos/get-access-tokens-from-git-provider.html#bitbucket) to establish the connection.
+3. Enter your **Bitbucket login** and **Bitbucket app password**, then click `Save` to create the repository.
+
+### 2. Create an MLflow Experiment for Development
+1. In **Databricks**: Navigate to `Workspace` -> `Users`, select your user, and click `Create` -> `MLflow Experiment`.
+2. Name the experiment and click `Create`.
+3. Copy the **MLflow experiment ID** from the **information panel** on the right.
+
+### 3. Configure the Development Environment
+1. Copy `conf/prod/environment.yml` to `conf/dev/`.
+2. Set default values for **bundle variables** (including the `MLflow experiment ID`) in `conf/dev/environment.yml`.
+
+### Configuration Adjustments
+
+To successfully run this project, you must update the following configuration files:
+
+1. **`databricks.yml` (located in the project root)**  
+   - Ensure that the correct workspace and cluster settings are specified.  
+   - Modify any required paths or resource configurations based on your environment.  
+
+2. **`conf/dev/environment.yml`** (for the development environment)  
+   - Update relevant variables such as MLflow experiment ID, storage paths, and credentials.  
+   - Ensure development-specific configurations align with your Databricks workspace.  
+
+3. **`conf/prd/environment.yml`** (for the production environment)  
+   - Define production-specific variables, including storage locations, and catalog references.  
+   - Ensure the settings comply with your Databricks deployment strategy.  
+
+Adjust these files accordingly before running the project to ensure a smooth execution.
+
+---
+
+## Credentials for Production Runs
+
+For secure production deployments, use **service principals**.
+
+If deploying on **Azure Databricks**, follow these steps:
+
+1. **Create a Service Principal** in Microsoft Entra ID:
+   - Follow [this guide](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/service-prin-aad-token#--provision-a-service-principal-in-azure-portal).
+
+2. **Register the Service Principal in Databricks**:
+   - Navigate to **Admin Settings** -> **Identity and Access** -> **Service Principals** -> **Add Service Principal**.
+3. **Generate an Access Token**:
+   - For a detailed guide on generating and using access tokens in Azure Databricks, refer to the official documentation:  
+     [Azure Databricks M2M Authentication](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/auth/oauth-m2m).

@@ -1,0 +1,46 @@
+image: python:3.10
+
+definitions:
+  
+  steps:
+    
+    - step: &validate_databricks_bundles
+        name: Validate Databricks bundles
+        script:
+          - curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          - databricks bundle validate -t prd
+
+    - step: &deploy_databricks_bundles
+        name: Deploy Databricks bundles
+        trigger: manual
+        script:
+          - curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          - databricks bundle deploy -t prd
+
+    - step: &run_demo_training_job
+        name: Run demo training job deployed with bundles
+        script:
+          - curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          - databricks bundle run demo_training_job -t prd
+
+    - step: &run_demo_inferencing_job
+        name: Run demo inference job deployed with bundles
+        script:
+          - curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          - databricks bundle run demo_inference_job -t prd 
+
+
+pipelines:
+  # Continuous Integration pipeline
+  # These will trigger whenever there is a merge to main or when new pull requests to the main branch are created
+  pull-requests:
+    'feature/*':
+      - step: *validate_databricks_bundles
+    'develop':
+      - step: *validate_databricks_bundles
+  branches:
+    'main':
+      - step: *validate_databricks_bundles
+      - step: *deploy_databricks_bundles
+      - step: *run_demo_training_job
+      - step: *run_demo_inferencing_job
