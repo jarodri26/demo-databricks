@@ -1,0 +1,39 @@
+variables:
+
+
+    SRC_DATABASE:
+        description: Database where source datasets are located
+        default: samples
+
+    SRC_SCHEMA:    
+        description: Schema in SRC_DATABASE where source datasets are located
+        default: nyctaxi
+
+    MLFLOW_EXPERIMENT_ID:
+        description: ID of mlflow experiments to track runs and store artifacts
+        default: 924614391598093
+        # when running in dev, copy file do dev/, create you own experiment and set as the default value    
+
+    MODEL_REGISTRY_CATALOG:
+        description: Catalog that contains the schema where model will be registered
+        default: ds_dev
+
+    MODEL_NAME:
+        description: name of the model to be used in MLflow model registry
+        default: taxi_fare_predictor_demo
+
+    MODEL_REGISTRY_SCHEMA:
+        description: Schema where models will be saved within unity catalog
+        default: dev_jose_rodriguez
+
+    MODEL_STORE_CATALOG:
+        description: Catalog that contains the schema where feature store tables will be saved
+        default: ds_dev
+
+    MODEL_STORE_SCHEMA:
+        description: Schema where feature store tables will be saved within unity catalog
+        default: ds_jose_rodriguez
+
+    MODEL_STORE:
+        description: provides a reference for writing data to and reading data from
+        default: fs_nyc_taxi_trips        
