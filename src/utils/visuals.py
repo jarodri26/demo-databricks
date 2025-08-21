@@ -1,4 +1,8 @@
 # Databricks notebook source
+pip install shap
+
+# COMMAND ----------
+
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import pandas as pd

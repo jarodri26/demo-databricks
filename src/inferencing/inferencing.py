@@ -4,6 +4,11 @@
 
 # COMMAND ----------
 
+# MAGIC %pip install databricks-feature-engineering
+# MAGIC dbutils.library.restartPython()
+
+# COMMAND ----------
+
 import datetime
 import mlflow
 import pandas as pd
@@ -71,6 +76,10 @@ ft_nyc_taxi_trips = fe.read_table(name=f'{vars["FEATURE_STORE_CATALOG"]}.{vars["
 
 # MAGIC %md
 # MAGIC ## Carregar o Modelo do MLflow Model Registry
+
+# COMMAND ----------
+
+pip install xgboost
 
 # COMMAND ----------
 

@@ -11,7 +11,7 @@ targets:
     mode: development
     default: true
     workspace:
-      host: <databricks_dev_workspace>
+      host: ip-10-53-219-166.ec2.internal
 
   # The 'prd' target, used for production deployment.
   prd:
@@ -19,6 +19,6 @@ targets:
     # Doing so enables strict verification of the settings below.
     mode: production
     workspace:
-      host: <databricks_prod_workspace>
-      root_path: /Workspace/Users/<username_or_service_principle>/.bundle/${bundle.name}/${bundle.target}
+      host: ip-10-53-219-166.ec2.internal
+      root_path: /Workspace/Users/jacarodriguez26@gmail.com/.bundle/${bundle.name}/${bundle.target}
      
