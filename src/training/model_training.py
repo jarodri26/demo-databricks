@@ -4,6 +4,12 @@
 
 # COMMAND ----------
 
+# MAGIC %pip install databricks-feature-engineering
+# MAGIC %pip install xgboost
+# MAGIC dbutils.library.restartPython()
+
+# COMMAND ----------
+
 import mlflow
 import numpy as np
 import pandas as pd

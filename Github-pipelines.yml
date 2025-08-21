@@ -1,0 +1,59 @@
+name: Databricks CI/CD
+
+on:
+  pull_request:
+    branches:
+      - feature/*
+      - develop
+  push:
+    branches:
+      - main
+
+jobs:
+  validate-bundles:
+    runs-on: ubuntu-latest
+    container: python:3.10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Databricks bundles
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks bundle validate -t prd
+
+  deploy-bundles:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    container: python:3.10
+    needs: validate-bundles
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Databricks bundles
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks bundle deploy -t prd
+
+  run-training-job:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    container: python:3.10
+    needs: deploy-bundles
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run demo training job
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks bundle run demo_training_job -t prd
+
+  run-inference-job:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    container: python:3.10
+    needs: run-training-job
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run demo inference job
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks bundle run demo_inference_job -t prd
