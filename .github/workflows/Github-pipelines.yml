@@ -1,6 +1,7 @@
 name: Databricks CI/CD
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - feature/*
