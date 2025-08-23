@@ -169,30 +169,49 @@ class CustomPredictor(mlflow.pyfunc.PythonModel):
 
 # COMMAND ----------
 
+def _evaluate_predictions(actual, predicted):
+    metrics = {
+        "r2": r2_score(actual, predicted),
+        "mean_absolute_error": mean_absolute_error(actual, predicted),
+        "root_mean_squared_error": np.sqrt(mean_squared_error(actual, predicted))
+    }
+    return metrics
+
+# COMMAND ----------
+
+import mlflow.pyfunc
+
+class CustomPredictor(mlflow.pyfunc.PythonModel):
+    def __init__(self, model):
+        self.model = model
+
+    def predict(self, context, model_input):
+        return self.model.predict(model_input)
+
+# Your existing code
 model_name = f'{vars["MODEL_REGISTRY_CATALOG"]}.{vars["MODEL_REGISTRY_SCHEMA"]}.{vars["MODEL_NAME"]}'
 
 with mlflow.start_run(experiment_id=vars["MLFLOW_EXPERIMENT_ID"]) as run:
-  
-  xgb = XGBRegressor(objective='reg:squarederror')
-  xgb.fit(X_train, y_train)
+    xgb = XGBRegressor(objective='reg:squarederror')
+    xgb.fit(X_train, y_train)
 
-  predictions = xgb.predict(X_test)
+    predictions = xgb.predict(X_test)
 
-  metrics = _evaluate_predictions(actual=y_test, predicted=predictions)
-  [mlflow.log_metric(key, value) for key, value in metrics.items()]
+    metrics = _evaluate_predictions(actual=y_test, predicted=predictions)
+    [mlflow.log_metric(key, value) for key, value in metrics.items()]
 
-  (figure := _generate_residuals_plot_figure(y_test, predictions))
-  mlflow.log_figure(figure, f"residual_analysis.png")
+    figure = _generate_residuals_plot_figure(y_test, predictions)
+    mlflow.log_figure(figure, f"residual_analysis.png")
 
-  input_example = X_train[:5]
-  
-  predictor = CustomPredictor(model=xgb)
-  mlflow.pyfunc.log_model(
-      artifact_path=vars["MODEL_NAME"],
-      python_model=predictor,
-      input_example=input_example,
-      registered_model_name=model_name
-  )
+    input_example = X_train[:5]
+
+    predictor = CustomPredictor(model=xgb)
+    mlflow.pyfunc.log_model(
+        artifact_path=vars["MODEL_NAME"],
+        python_model=predictor,
+        input_example=input_example,
+        registered_model_name=model_name
+    )
 
 predictions
 
@@ -206,7 +225,7 @@ predictions
 # Get the latest version of the model
 mlflow_client = MlflowClient()
 results = mlflow_client.search_model_versions(f"name='{model_name}'")
-latest_version = max(results, key=lambda x: x.version).version
+latest_version = max(results, key=lambda x: int(x.version)).version if results else None
 
 # Assign the alias challenger to the last version of the model
 mlflow_client.set_registered_model_alias(

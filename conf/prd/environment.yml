@@ -11,7 +11,7 @@ variables:
 
     MLFLOW_EXPERIMENT_ID:
         description: ID of mlflow experiments to track runs and store artifacts
-        default: 3285309918035551
+        default: 1839629324156254
         # when running in dev, copy file do dev/, create you own experiment and set as the default value    
 
     MODEL_REGISTRY_CATALOG:
@@ -24,7 +24,7 @@ variables:
 
     MODEL_REGISTRY_SCHEMA:
         description: Schema where models will be saved within unity catalog
-        default: dev_jose
+        default: dev_jose_rodriguez
 
     FEATURE_STORE_CATALOG:
         description: Catalog that contains the schema where feature store tables will be saved
@@ -32,7 +32,7 @@ variables:
 
     FEATURE_STORE_SCHEMA:
         description: Schema where feature store tables will be saved within unity catalog
-        default: dev_jose
+        default: dev_jose_rodriguez
 
     FEATURE_STORE:
         description: provides a reference for writing data to and reading data from
